@@ -38,7 +38,7 @@ def test_grade_assignment_cross(client, h_teacher_2):
             "grade": "A"
         }
     )
-
+    
     assert response.status_code == 400
     data = response.json
 
@@ -89,8 +89,7 @@ def test_grade_assignment_draft_assignment(client, h_teacher_1):
     """
     response = client.post(
         '/teacher/assignments/grade',
-        headers=h_teacher_1
-        , json={
+        headers=h_teacher_1, json={
             "id": 2,
             "grade": "A"
         }
