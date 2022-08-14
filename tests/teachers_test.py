@@ -38,7 +38,7 @@ def test_grade_assignment_cross(client, h_teacher_2):
             "grade": "A"
         }
     )
-    
+
     assert response.status_code == 400
     data = response.json
 
@@ -60,6 +60,7 @@ def test_grade_assignment_bad_grade(client, h_teacher_1):
 
     assert response.status_code == 400
     data = response.json
+    print(data)
 
     assert data['error'] == 'ValidationError'
 
@@ -99,3 +100,38 @@ def test_grade_assignment_draft_assignment(client, h_teacher_1):
     data = response.json
 
     assert data['error'] == 'FyleError'
+
+
+
+
+# test grade assignment for teacher 
+
+
+def test_grade_assignment_grade_assignment(client, h_teacher_2):
+    ass = client.get(
+        '/teacher/assignments',
+        headers=h_teacher_2
+    )
+
+    assert ass.status_code == 200
+
+    dt = ass.json['data']
+    for assignment in dt:
+        assert assignment['teacher_id'] == 2
+        # assert assignment['state'] == 'SUBMITTED'
+        if assignment['state'] == 'SUBMITTED':
+            response = client.post(
+                '/teacher/assignments/grade',
+                headers=h_teacher_2,
+                json={
+                    "id": assignment['id'],
+                    "grade": "A"
+                }
+            )
+
+            assert response.status_code == 200
+            data = response.json
+            assert data['data']['state'] == 'GRADED'
+            assert data['data']['grade'] == 'A'
+            assert data['data']['teacher_id'] == 2
+            assert data['data']['id'] == assignment['id']

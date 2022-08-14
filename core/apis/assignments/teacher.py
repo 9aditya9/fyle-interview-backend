@@ -27,9 +27,11 @@ def grade_assignment(p, incoming_payload):
 
     graded_assignment = Assignment.graded(
         _id=grade_assignment_payload.id,
-        teacher_id=p.teacher_id,
+        grade=grade_assignment_payload.grade,
         principal=p
     )
     db.session.commit()
     graded_assignment_dump = AssignmentSchema().dump(graded_assignment)
     return APIResponse.respond(data=graded_assignment_dump)
+
+

@@ -73,4 +73,20 @@ def test_assingment_resubmitt_error(client, h_student_1):
     assert error_response["message"] == 'only a draft assignment can be submitted'
 
 
-    
+def test_post_assignment_update_student_1(client, h_student_1):
+    content = 'change the content of the assignment'
+
+    response = client.post(
+        '/student/assignments',
+        headers=h_student_1,
+        json={
+            'id': 5,
+            'content': content
+        })
+
+    assert response.status_code == 200
+
+    data = response.json['data']
+    assert data['content'] == content
+    assert data['state'] == 'DRAFT'
+    assert data['teacher_id'] is None
